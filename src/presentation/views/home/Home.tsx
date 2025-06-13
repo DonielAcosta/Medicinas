@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/react-in-jsx-scope */
 import { Button, Layout, Text } from '@ui-kitten/components';
+import React from 'react';
 
 export const Home = () => {
   return (

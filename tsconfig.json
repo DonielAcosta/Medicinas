@@ -1,6 +1,15 @@
 {
   "extends": "@react-native/typescript-config/tsconfig.json",
   "compilerOptions": {
-      "typeRoots": ["./types"],
-  }
+    "jsx": "react",
+    "jsx": "react",
+    "jsx": "react",
+    "jsx": "react",
+    "typeRoots": ["./types", "./node_modules/@types"],
+    "baseUrl": ".",
+    "paths": {
+      "@react-native-async-storage/*": ["node_modules/@react-native-async-storage/*"]
+    }
+  },
+  "include": ["src/**/*", "types/**/*"]
 }

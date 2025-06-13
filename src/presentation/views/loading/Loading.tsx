@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/react-in-jsx-scope */
 import { Layout, Spinner } from '@ui-kitten/components';
+import React from 'react';
 
 export const Loading = () => {
   return (

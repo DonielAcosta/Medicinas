@@ -1,131 +1,118 @@
 /* eslint-disable react-native/no-inline-styles */
-import { Button, Input, Layout, Text } from '@ui-kitten/components';
-import React, { useState } from 'react';
-import { useWindowDimensions } from 'react-native';
-import { MyIcon } from '../../components/ui/MyIcon';
-import { API_URL } from '@env';
+/* eslint-disable react/react-in-jsx-scope */
+import { useState, useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Keyboard,
+  TextInput as RNTextInput,
+} from 'react-native';
+
+import {Loader} from '../../../components/elements/Loader';
+import { setDataStorage } from '../../../config/api/asyncStorage';
 import { fetchLogin } from '../../../config/api/proteoApi';
+import {useNavigation} from '../../../hooks/useNavigation';
+import { useLogin } from '../../../hooks';
+import React from 'react';
 
 export const Login = () => {
-  const { height } = useWindowDimensions();
-  console.log(API_URL);
-
-  const [user, setUser]         = useState('');
+  const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
-  //para mostrar la contrasena que copiamos
   const [showPassword, setShowPassword] = useState(false);
-  // cuando copien los datos malos
   const [incorrectCredentials, setIncorrectCredentials] = useState(false);
-  //datos que necesito para ingresar
-  const [requiredFields, setRequiredFields] = useState({
-    user: false,
-    password: false,
-  });
+  const [requiredFields, setRequiredFields] = useState({ user: false, password: false });
 
-  const { loadingAuth, setLoadingAuth, setMyUser, setLogin, checkLocationPermission } = useLogin();
+  const { loadingAuth, setLoadingAuth, setMyUser, setLogin } = useLogin();
   const navigation = useNavigation();
-  const textInputRefUser = useRef<TextInput | null>(null);
-  const textInputRefPassword = useRef<TextInput | null>(null);
 
-  // -----------------------------------------------
-  // AUTH
-  // -----------------------------------------------
+  const textInputRefUser = useRef<RNTextInput>(null);
+  const textInputRefPassword = useRef<RNTextInput>(null);
+
+  useEffect(() => {
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', removeInputFocus);
+    return () => keyboardDidHideListener.remove();
+  }, []);
+
+  const removeInputFocus = () => {
+    textInputRefUser.current?.blur();
+    textInputRefPassword.current?.blur();
+  };
 
   const auth = async () => {
-    // required fields
-    if (user === '' && password === '') {
-      setRequiredFields({ ...requiredFields, user: true, password: true });
+    if (!user || !password) {
+      setRequiredFields({ user: !user, password: !password });
       setIncorrectCredentials(false);
       return;
-    } else if (user === '') {
-      setRequiredFields({ ...requiredFields, user: true, password: false });
-      setIncorrectCredentials(false);
-      return;
-    } else if (password === '') {
-      setRequiredFields({ ...requiredFields, user: false, password: true });
-      setIncorrectCredentials(false);
-      return;
-    } else {
-      setRequiredFields({ ...requiredFields, user: false, password: false });
     }
 
     setLoadingAuth(true);
     setIncorrectCredentials(false);
 
-    // api call
     const res = await fetchLogin({ usuario: user, password });
     const dataUser = res[0];
 
-    if (res?.message) { // incorrect credentials
+    if (res?.message) {
       setLoadingAuth(false);
       setIncorrectCredentials(true);
     } else {
-      setIncorrectCredentials(false);
+      const access = {
+        customerAccess: !!dataUser?.cliente,
+        labAccess: !!dataUser?.clipro,
+        salespersonAccess: dataUser?.clipro === '',
+      };
 
-      setUser({
-        ...dataUser,
-        access: {
-          customerAccess: dataUser?.cliente ? true : false,
-          labAccess: dataUser?.clipro ? true : false,
-          salespersonAccess: dataUser?.clipro === '' ? true : false,
-        },
-      });
+      const userData = { ...dataUser, access };
 
-      await setDataStorage('myUser', {
-        ...dataUser,
-        access: {
-          customerAccess: dataUser?.cliente ? true : false,
-          labAccess: dataUser?.clipro ? true : false,
-          salespersonAccess: dataUser?.clipro === '' ? true : false
-        },
-      });
+      setMyUser(userData);
+      await setDataStorage('myUser', userData);
       await setDataStorage('login', true);
 
       setLogin(true);
       setLoadingAuth(false);
       setShowPassword(false);
-      navigation.navigate('Home');
-
       setUser('');
       setPassword('');
+      // navigation.navigate('Home');
+      navigation.replace('Login');
     }
   };
 
   return (
-    <Layout style={{ flex: 1, paddingHorizontal: 40 }}>
-      <Layout style={{ flex: 1, justifyContent: 'flex-start', paddingTop: height * 0.35 }}>
-        <Text category="h1" style={{ fontWeight: 'bold' }}>Ingresar</Text>
-        <Text category="p2" style={{ fontWeight: 'bold', marginBottom: 20 }}>
-          Por favor, ingresar para continuar
-        </Text>
+    <View style={{ flex: 1, justifyContent: 'center', padding: 20 }}>
+      <TextInput
+        ref={textInputRefUser}
+        placeholder="Usuario"
+        value={user}
+        onChangeText={setUser}
+        style={{ borderBottomWidth: 1, marginBottom: 10 }}
+      />
+      {requiredFields.user && <Text style={{ color: 'red' }}>* Campo obligatorio</Text>}
 
-        <Input
-          placeholder="Usuario"
-          keyboardType="default"
-          autoCapitalize="none"
-          accessoryLeft={<MyIcon name="person-outline" />}
-          style={{ marginBottom: 10 }}
-        />
+      <TextInput
+        ref={textInputRefPassword}
+        placeholder="Contraseña"
+        secureTextEntry={!showPassword}
+        value={password}
+        onChangeText={setPassword}
+        style={{ borderBottomWidth: 1, marginBottom: 10 }}
+      />
+      {requiredFields.password && <Text style={{ color: 'red' }}>* Campo obligatorio</Text>}
 
-        <Input
-          placeholder="Contraseña"
-          autoCapitalize="none"
-          secureTextEntry
-          accessoryLeft={<MyIcon name="lock-outline" />}
-          style={{ marginBottom: 10 }}
-        />
+      {incorrectCredentials && <Text style={{ color: 'red' }}>* Datos incorrectos</Text>}
 
-        <Button
-        accessoryRight={<MyIcon  name="arrow-forward-outline" white/>}
-         onPress={() => {}}
-         style={{ backgroundColor: '#00C851', borderColor: '#00C851' }}
-         >
-          Ingresar
-        </Button>
-      </Layout>
-    </Layout>
+      <TouchableOpacity
+        onPress={auth}
+        style={{ padding: 10, backgroundColor: '#92BF1E', marginTop: 10, alignItems: 'center' }}
+      >
+        {!loadingAuth ? (
+          <Text style={{ color: '#fff', fontWeight: 'bold' }}>Iniciar Sesión</Text>
+        ) : (
+          <Loader size={24} color="#fff" />
+        )}
+      </TouchableOpacity>
+    </View>
   );
 };
 
-
-     

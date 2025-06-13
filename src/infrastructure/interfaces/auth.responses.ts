@@ -29,3 +29,11 @@ export interface MyUserInterface {
     }
     deposito?: string
   }
+  export interface UserFromScliInterface {
+    cliente: string
+    nombre: string
+    dscCliente: string
+    clave: string
+    rifci: string
+    deposito: string
+  }
