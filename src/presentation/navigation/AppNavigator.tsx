@@ -4,22 +4,23 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Login } from '../views/auth/Login';
 import { Home } from '../views/home/Home';
 import { Loading } from '../views/loading/Loading';
-import { useLogin } from '../../hooks/useLogin';
+import { useLogin } from '../hooks/useLogin';
 import { getDataStorage } from '../../config/api/asyncStorage';
-import { LoaderLogoScreen } from '../../components/certra/LoaderLogoScreen';
+import { LoaderLogoScreen } from '../components/certra/LoaderLogoScreen';
 
 const Stack = createNativeStackNavigator();
 
 export const AppNavigator = () => {
   const [loadingStorage, setLoadingStorage] = useState(true);
-  const { login, setLogin, setMyUser } = useLogin();
+  const { setLogin, setMyUser } = useLogin();
 
   useEffect(() => {
     const getStorage = async () => {
       const loginStorage = await getDataStorage('login');
       const myUserStorage = await getDataStorage('myUser');
 
-      setLogin(loginStorage === 'true');
+
+      setLogin(loginStorage === 'true' ? true : false);
       setMyUser(myUserStorage ? JSON.parse(myUserStorage) : {});
     };
 
@@ -36,10 +37,10 @@ export const AppNavigator = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName={'Login'}
-        screenOptions={{ headerShown: false }}
-      >
+    <Stack.Navigator
+      initialRouteName="Login"
+      screenOptions={{ headerShown: false }}
+    >
         <Stack.Screen name="Loading" component={Loading} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Home" component={Home} />

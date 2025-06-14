@@ -1,6 +1,7 @@
+/* eslint-disable react-native/no-inline-styles */
 import { useState, useEffect } from 'react';
 import { View, Animated, Easing, StatusBar } from 'react-native';
-import { themeColors } from '../../styles/themeColors';
+import { themeColors } from '../../../styles/themeColors';
 
 
 import React from 'react';
@@ -34,16 +35,16 @@ export const LoaderLogoScreen = () => {
     // <View className='flex-1 justify-center items-center bg-background'>
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: background }}>
 
-      <StatusBar backgroundColor={background} barStyle='dark-content' />
+      <StatusBar backgroundColor={background} barStyle="dark-content" />
 
       <Animated.Image
-        source={require('../../assets/pastilla.png')}
+        source={require('../../../assets/pastilla.png')}
         style={{
           transform: [{ rotate: rotateInterpolation }],
           width: 100,
           height: 100,
         }}
-        resizeMode='contain'
+        resizeMode="contain"
       />
     </View>
   );

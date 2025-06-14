@@ -18,7 +18,6 @@ export const API_URL =
 // -----------------------------------------------
 
 const loginEndpoint = () => `${API_URL}/appmovilnotifica/login`;
-const tableDataEndpoint = (table: string) => `${API_URL}/${table}`;
 
 
 // -----------------------------------------------
@@ -52,7 +51,4 @@ const apiCall = async (
 
 export const fetchLogin = (data: { usuario: string; password: string }) => {
   return apiCall(loginEndpoint(), 'POST', data);
-};
-export const fetchTableData = (table: string) => {
-  return apiCall(tableDataEndpoint(table), 'GET');
 };
