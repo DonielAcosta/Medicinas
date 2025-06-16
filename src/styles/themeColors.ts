@@ -11,5 +11,5 @@ export const themeColors = {
     typography: '#666666',
     processBtn: '#808080',
     placeholder: '#999999',
+    colorprincipal:'#e94ea3',
   };
-  

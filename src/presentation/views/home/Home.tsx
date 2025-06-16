@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 // import {SelectCustomer,Logos,ProductsHome,TabBar} from '../components';
 import { themeColors } from 'src/styles/themeColors';
 // import { useLogin } from 'src/presentation/hooks';
+import {TabBar} from '../../components/tabBar/TabBar';
 
 export const Home = () => {
   const { background } = themeColors;
@@ -40,7 +41,7 @@ export const Home = () => {
       </SafeAreaView>
 
       <View style={styles.tabBar}>
-        {/* <TabBar /> */}
+        <TabBar />
       </View>
     </>
   );

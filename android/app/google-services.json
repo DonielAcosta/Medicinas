@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "673368283153",
+    "project_id": "medicinas-fa42b",
+    "storage_bucket": "medicinas-fa42b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673368283153:android:eb8e5aadd3b8184c2279b0",
+        "android_client_info": {
+          "package_name": "com.medicinas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZVCBW8rTwIoaR_QhczEgfiG7D941ytLs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -7,12 +7,14 @@ import { Loading } from '../views/loading/Loading';
 import { useLogin } from '../hooks/useLogin';
 import { getDataStorage } from '../../config/api/asyncStorage';
 import { LoaderLogoScreen } from '../components/certra/LoaderLogoScreen';
+import { Salud } from '../views/salud/Salud';
+import { SaludScreen } from '../views/salud/SaludScreen';
 
 const Stack = createNativeStackNavigator();
 
 export const AppNavigator = () => {
   const [loadingStorage, setLoadingStorage] = useState(true);
-  const { setLogin, setMyUser } = useLogin();
+  const { login,setLogin, setMyUser } = useLogin();
 
   useEffect(() => {
     const getStorage = async () => {
@@ -29,22 +31,30 @@ export const AppNavigator = () => {
         setLoadingStorage(false);
       }, 1000);
     });
-  }, []);
+  }, [setLogin, setMyUser]);
 
-  if (loadingStorage) {
-    return <LoaderLogoScreen />;
-  }
+  // if (loadingStorage) {
+  //   return <LoaderLogoScreen />;
+  // }
 
   return (
+    <>
+    {loadingStorage ? (
+      <LoaderLogoScreen />
+    ) : (
     <NavigationContainer>
     <Stack.Navigator
-      initialRouteName="Login"
+      initialRouteName={'Login'}
       screenOptions={{ headerShown: false }}
     >
         <Stack.Screen name="Loading" component={Loading} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Salud" component={Salud} />
+        <Stack.Screen name="SaludScreen" component={SaludScreen} />
+
       </Stack.Navigator>
-    </NavigationContainer>
+    </NavigationContainer>)}
+    </>
   );
 };
